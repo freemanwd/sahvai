@@ -454,6 +454,7 @@ body {
     padding: 2rem;
     border-radius: 12px;
     box-shadow: 0 4px 6px var(--shadow);
+    margin-bottom: 2rem;
 }
 
 .contact-info h3 {
@@ -472,6 +473,26 @@ body {
 
 .contact-info a:hover {
     text-decoration: underline;
+}
+
+.philanthropy-note {
+    text-align: center;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px var(--shadow);
+    border-left: 4px solid var(--secondary);
+}
+
+.philanthropy-note p {
+    color: var(--text-light);
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.philanthropy-note strong {
+    color: var(--primary);
+    font-size: 1.125rem;
 }
 
 /* Footer */
