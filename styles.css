@@ -71,6 +71,22 @@ body {
     color: var(--primary);
 }
 
+.nav-tools-link {
+    color: var(--primary) !important;
+    background: rgba(8, 81, 165, 0.1);
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid rgba(8, 81, 165, 0.3);
+    font-weight: 600 !important;
+    transition: all 0.3s;
+}
+
+.nav-tools-link:hover {
+    background: var(--primary) !important;
+    color: #fff !important;
+    border-color: var(--primary);
+}
+
 .mobile-menu-btn {
     display: none;
     flex-direction: column;
