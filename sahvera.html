@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SAHVERA — the SAHV European and international Research Alliance: a global consortium of sites advancing subarachnoid hemorrhage volumetrics and AI, interfacing with the CODE ICH group.">
+    <title>SAHVERA Consortium | SAHVAI Lab</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="sahvera.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="container">
+            <div class="nav-content">
+                <a href="index.html" class="logo">SAHVAI Lab</a>
+                <div class="nav-links">
+                    <a href="index.html#about">About</a>
+                    <a href="index.html#research">Research</a>
+                    <a href="index.html#team">Team</a>
+                    <a href="index.html#publications">Publications</a>
+                    <a href="index.html#consortium">Consortium</a>
+                    <a href="sahvera.html" class="active">SAHVERA</a>
+                    <a href="index.html#contact">Contact</a>
+                    <a href="https://sahvai-lab.github.io/SAHVAI-Calculator/" target="_blank" rel="noopener" class="nav-tools-link">SAHVAI WebApp Tools</a>
+                </div>
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Globe hero -->
+    <section class="sv-hero">
+        <div class="container">
+            <div class="sv-hero-grid">
+                <div class="sv-hero-text">
+                    <p class="sv-eyebrow">SAHV European &amp; international Research Alliance</p>
+                    <h1>SAHVERA</h1>
+                    <p class="sv-lead">One shared measure of subarachnoid hemorrhage, across continents. SAHVERA links centers that contribute de-identified imaging and outcomes to validate SAH volume (SAHV) and build explainable AI for non-contrast head CT.</p>
+                    <div class="sv-counters">
+                        <div><span>4</span><small>Sites</small></div>
+                        <div><span>3</span><small>Countries</small></div>
+                        <div><span>3</span><small>Continents</small></div>
+                    </div>
+                    <div class="hero-actions">
+                        <a href="#sites" class="btn btn-primary">Explore the sites</a>
+                        <a href="#code-ich" class="btn btn-secondary">CODE ICH interface</a>
+                    </div>
+                </div>
+                <div class="sv-globe-wrap">
+                    <canvas id="globe" aria-label="Interactive globe showing SAHVERA consortium sites. Drag to rotate." role="img"></canvas>
+                    <div class="sv-globe-label" id="globeLabel" aria-live="polite"></div>
+                    <p class="sv-globe-hint">Drag to rotate · select a site to fly to it</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sites -->
+    <section id="sites" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Participating Sites</h2>
+                <p class="section-subtitle">Centers and investigators building a shared SAHV evidence base</p>
+            </div>
+            <div class="sv-site-tabs" id="siteTabs" role="tablist" aria-label="Filter sites">
+                <button class="sv-chip active" data-filter="all" role="tab" aria-selected="true">All</button>
+                <button class="sv-chip" data-filter="na" role="tab" aria-selected="false">North America</button>
+                <button class="sv-chip" data-filter="sa" role="tab" aria-selected="false">South America</button>
+                <button class="sv-chip" data-filter="asia" role="tab" aria-selected="false">Asia</button>
+            </div>
+
+            <div class="sv-site-grid" id="siteGrid">
+
+                <article class="sv-site" data-region="na" data-site="jacksonville">
+                    <div class="sv-site-head">
+                        <span class="sv-dot sv-dot-hub"></span>
+                        <div>
+                            <h3>Mayo Clinic Florida</h3>
+                            <p class="sv-place">Jacksonville, Florida, USA</p>
+                        </div>
+                        <span class="sv-tag sv-tag-hub">Coordinating center</span>
+                    </div>
+                    <div class="sv-people">
+                        <div class="sv-person">
+                            <div class="sv-avatar"><span>WF</span></div>
+                            <div>
+                                <strong>W. David Freeman, MD</strong>
+                                <small>Principal Investigator<br>Neurocritical Care</small>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="sv-fly" data-fly="jacksonville">Show on globe</button>
+                </article>
+
+                <article class="sv-site" data-region="na" data-site="uw">
+                    <div class="sv-site-head">
+                        <span class="sv-dot sv-dot-new"></span>
+                        <div>
+                            <h3>University of Washington</h3>
+                            <p class="sv-place">Department of Neurology, Seattle, Washington, USA</p>
+                        </div>
+                        <span class="sv-tag sv-tag-new">Welcome</span>
+                    </div>
+                    <div class="sv-people">
+                        <div class="sv-person">
+                            <div class="sv-avatar">
+                                <span>VL</span>
+                                <img src="https://neurology.uw.edu/wp-content/uploads/2022/07/Victor-Lin.jpg" alt="Headshot of Victor Lin, MD" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">
+                            </div>
+                            <div>
+                                <strong>Victor Lin, MD</strong>
+                                <small>Assistant Professor of Neurology<br>Neurointensivist, Neurocritical Care</small>
+                            </div>
+                        </div>
+                        <div class="sv-person">
+                            <div class="sv-avatar">
+                                <span>BM</span>
+                                <img src="https://neurology.uw.edu/wp-content/uploads/2021/12/Leslie-Mazwi_Bay.jpg" alt="Headshot of Thabele M. (Bay) Leslie-Mazwi, MD" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">
+                            </div>
+                            <div>
+                                <strong>Bay Leslie-Mazwi, MD</strong>
+                                <small>Chair, Department of Neurology<br>Professor of Neurology</small>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="sv-fly" data-fly="uw">Show on globe</button>
+                </article>
+
+                <article class="sv-site" data-region="sa" data-site="brazil">
+                    <div class="sv-site-head">
+                        <span class="sv-dot"></span>
+                        <div>
+                            <h3>SAHV-BRaZA Sites</h3>
+                            <p class="sv-place">Brazil</p>
+                        </div>
+                        <span class="sv-tag">Active</span>
+                    </div>
+                    <p class="sv-note">Contributing de-identified cases under the consortium agreement for limited data sets.</p>
+                    <button class="sv-fly" data-fly="brazil">Show on globe</button>
+                </article>
+
+                <article class="sv-site" data-region="asia" data-site="nanchang">
+                    <div class="sv-site-head">
+                        <span class="sv-dot sv-dot-new"></span>
+                        <div>
+                            <h3>Nanchang University</h3>
+                            <p class="sv-place">BrainHemoAI Group, Nanchang, Jiangxi, China</p>
+                        </div>
+                        <span class="sv-tag sv-tag-new">Welcome</span>
+                    </div>
+                    <div class="sv-people">
+                        <div class="sv-person">
+                            <div class="sv-avatar"><span>PH</span></div>
+                            <div>
+                                <strong>Dr. Ping Hu</strong>
+                                <small>BrainHemoAI Group<br>Nanchang University</small>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="sv-fly" data-fly="nanchang">Show on globe</button>
+                </article>
+
+            </div>
+            <p class="sv-footnote">Mayo Clinic Rochester (Minnesota) is part of the Mayo SAHVAI team and appears on the globe as a linked node.</p>
+        </div>
+    </section>
+
+    <!-- CODE ICH -->
+    <section id="code-ich" class="section section-alt">
+        <div class="container">
+            <div class="sv-code">
+                <div class="sv-code-text">
+                    <p class="sv-eyebrow sv-eyebrow-dark">Interfacing with</p>
+                    <h2>CODE ICH</h2>
+                    <p>Intracerebral and subarachnoid hemorrhage share the same first problem: finding and measuring blood on a head CT, fast and the same way everywhere. SAHVERA is designed to interface with the <strong>CODE ICH</strong> group so that volumetric measurement, AI tools and trial-ready data standards can be shared across hemorrhagic stroke.</p>
+                    <ul class="sv-code-list">
+                        <li>Common hemorrhage volumetrics and reporting language</li>
+                        <li>Shared imaging pipelines and AI validation approaches</li>
+                        <li>Aligned governance for multi-site, de-identified data</li>
+                    </ul>
+                    <a href="https://code-ich.org" target="_blank" rel="noopener" class="btn btn-primary">Visit code-ich.org</a>
+                </div>
+                <div class="sv-code-diagram" aria-hidden="true">
+                    <svg viewBox="0 0 360 260" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0" stop-color="#0051A5"/><stop offset="1" stop-color="#00B4D8"/>
+                            </linearGradient>
+                        </defs>
+                        <circle cx="110" cy="130" r="82" fill="url(#g1)" opacity=".9"/>
+                        <circle cx="250" cy="130" r="82" fill="#E4572E" opacity=".85"/>
+                        <path d="M180 62a82 82 0 0 1 0 136a82 82 0 0 1 0-136z" fill="#fff" opacity=".35"/>
+                        <text x="82" y="126" fill="#fff" font-size="20" font-weight="700" text-anchor="middle">SAH</text>
+                        <text x="82" y="148" fill="#fff" font-size="12" text-anchor="middle">SAHVERA</text>
+                        <text x="278" y="126" fill="#fff" font-size="20" font-weight="700" text-anchor="middle">ICH</text>
+                        <text x="278" y="148" fill="#fff" font-size="12" text-anchor="middle">CODE ICH</text>
+                        <text x="180" y="136" fill="#003D7A" font-size="11" font-weight="600" text-anchor="middle">shared</text>
+                        <text x="180" y="150" fill="#003D7A" font-size="11" font-weight="600" text-anchor="middle">CT volumetrics</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Join -->
+    <section id="join" class="section">
+        <div class="container">
+            <div class="consortium-content">
+                <div class="section-header">
+                    <h2 class="section-title">Join SAHVERA</h2>
+                    <p class="section-subtitle">Bring your center into the alliance</p>
+                </div>
+                <div class="consortium-benefits">
+                    <h3>What members receive</h3>
+                    <ul>
+                        <li>Access to multi-site, de-identified SAH imaging datasets</li>
+                        <li>Validated SAHV tools for research and clinical trials</li>
+                        <li>Collaboration with leading international researchers</li>
+                        <li>Rigorous data privacy and governance frameworks</li>
+                        <li>Contribution to open, auditable AI methods</li>
+                    </ul>
+                </div>
+                <div class="consortium-cta">
+                    <a href="mailto:freeman.william1@mayo.edu?subject=SAHVERA%20consortium%20inquiry" class="btn btn-primary btn-large">Contact the SAHVAI Lab</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>SAHVAI Lab</h4>
+                    <p>Subarachnoid Hemorrhage Volumetrics AI Laboratory</p>
+                    <p>Mayo Clinic</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="index.html">Home</a>
+                    <a href="index.html#consortium">SAHV-BRaZA</a>
+                    <a href="#sites">SAHVERA sites</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <a href="https://code-ich.org" target="_blank" rel="noopener">CODE ICH</a>
+                    <a href="https://github.com/freemanwd/sahvai" target="_blank" rel="noopener">GitHub</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 SAHVAI Lab, Mayo Clinic. All rights reserved.</p>
+                <p>Built with care for advancing SAH research globally.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="vendor/d3-array.min.js"></script>
+    <script src="vendor/d3-geo.min.js"></script>
+    <script src="vendor/topojson-client.min.js"></script>
+    <script src="script.js"></script>
+    <script src="globe.js"></script>
+</body>
+</html>
