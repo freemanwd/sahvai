@@ -12,6 +12,7 @@
         jacksonville: { name: 'Mayo Clinic Florida · Jacksonville', ll: [-81.45, 30.26], kind: 'hub' },
         baptist:      { name: 'Baptist Neurological Institute · Jacksonville', ll: [-81.67, 30.31], kind: 'site' },
         rochester:    { name: 'Mayo Clinic · Rochester', ll: [-92.47, 44.02], kind: 'node' },
+        creighton:    { name: 'Creighton University · Omaha', ll: [-95.95, 41.27], kind: 'new' },
         uw:           { name: 'University of Washington · Seattle', ll: [-122.33, 47.61], kind: 'new' },
         brazil:       { name: 'UNIFESP · São Paulo (SAHV-BRaZA)', ll: [-46.63, -23.55], kind: 'site' },
         nanchang:     { name: 'Nanchang University · BrainHemoAI', ll: [115.86, 28.68], kind: 'new' },
@@ -21,6 +22,7 @@
     const ARCS = [
         ['jacksonville', 'rochester'],
         ['jacksonville', 'uw'],
+        ['jacksonville', 'creighton'],
         ['jacksonville', 'brazil'],
         ['jacksonville', 'nanchang'],
         ['jacksonville', 'helsinki'],
