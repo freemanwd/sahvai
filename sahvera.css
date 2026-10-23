@@ -240,3 +240,15 @@
     border-radius: 0 8px 8px 0;
 }
 .sv-also-stands span { text-transform: uppercase; letter-spacing: .1em; font-size: .72rem; font-weight: 600; color: var(--secondary); margin-right: .35rem; }
+
+/* Future trials */
+.sv-future-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem; max-width: 1000px; margin: 0 auto; }
+.sv-future-card { background: #fff; border-radius: 12px; box-shadow: 0 4px 6px var(--shadow); padding: 2rem; border-top: 4px solid var(--primary); }
+.sv-future-trial { border-top-color: #F5A524; }
+.sv-future-card h3 { color: var(--primary); font-size: 1.5rem; margin-bottom: .5rem; line-height: 1.3; }
+.sv-trial-name { font-weight: 600; margin-bottom: .75rem; }
+.sv-future-card p { margin-bottom: 1rem; }
+.sv-chips { list-style: none; display: flex; flex-wrap: wrap; gap: .5rem; padding: 0; }
+.sv-chips li { font-size: .8rem; font-weight: 600; padding: .3rem .75rem; border-radius: 999px; background: rgba(0,180,216,.12); color: #007a94; }
+.sv-future-trial .sv-chips li { background: rgba(245,165,36,.18); color: #9a5b00; }
+@media (max-width: 900px) { .sv-future-grid { grid-template-columns: 1fr; } }
