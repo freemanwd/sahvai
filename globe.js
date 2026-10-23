@@ -9,11 +9,13 @@
 
     // Sites: [lon, lat]
     const SITES = {
-        jacksonville: { name: 'Mayo Clinic Florida · Jacksonville', ll: [-81.65, 30.33], kind: 'hub' },
+        jacksonville: { name: 'Mayo Clinic Florida · Jacksonville', ll: [-81.45, 30.26], kind: 'hub' },
+        baptist:      { name: 'Baptist Neurological Institute · Jacksonville', ll: [-81.67, 30.31], kind: 'site' },
         rochester:    { name: 'Mayo Clinic · Rochester', ll: [-92.47, 44.02], kind: 'node' },
         uw:           { name: 'University of Washington · Seattle', ll: [-122.33, 47.61], kind: 'new' },
-        brazil:       { name: 'SAHV-BRaZA · Brazil', ll: [-46.63, -23.55], kind: 'site' },
-        nanchang:     { name: 'Nanchang University · BrainHemoAI', ll: [115.86, 28.68], kind: 'new' }
+        brazil:       { name: 'UNIFESP · São Paulo (SAHV-BRaZA)', ll: [-46.63, -23.55], kind: 'site' },
+        nanchang:     { name: 'Nanchang University · BrainHemoAI', ll: [115.86, 28.68], kind: 'new' },
+        helsinki:     { name: 'Helsinki University Hospital', ll: [24.94, 60.17], kind: 'new' }
     };
     const COLORS = { hub: '#4DA3FF', site: '#00D4FF', new: '#FFB547', node: '#9fd8ff' };
     const ARCS = [
@@ -21,6 +23,8 @@
         ['jacksonville', 'uw'],
         ['jacksonville', 'brazil'],
         ['jacksonville', 'nanchang'],
+        ['jacksonville', 'helsinki'],
+        ['jacksonville', 'baptist'],
         ['uw', 'nanchang']
     ];
 
