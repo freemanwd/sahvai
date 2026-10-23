@@ -228,3 +228,15 @@
 
 .sv-also { font-size: .85rem; color: var(--text-light); line-height: 1.5; border-top: 1px solid var(--border); padding-top: .75rem; }
 .sv-also strong { color: var(--text); }
+
+.sv-also-stands {
+    border-left: 3px solid var(--secondary);
+    background: rgba(0, 180, 216, .08);
+    padding: .75rem 1rem;
+    margin: -.25rem 0 1.25rem;
+    max-width: 34rem;
+    font-size: .98rem;
+    line-height: 1.55;
+    border-radius: 0 8px 8px 0;
+}
+.sv-also-stands span { text-transform: uppercase; letter-spacing: .1em; font-size: .72rem; font-weight: 600; color: var(--secondary); margin-right: .35rem; }
