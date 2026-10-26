@@ -252,3 +252,6 @@
 .sv-chips li { font-size: .8rem; font-weight: 600; padding: .3rem .75rem; border-radius: 999px; background: rgba(0,180,216,.12); color: #007a94; }
 .sv-future-trial .sv-chips li { background: rgba(245,165,36,.18); color: #9a5b00; }
 @media (max-width: 900px) { .sv-future-grid { grid-template-columns: 1fr; } }
+
+.sv-code { grid-template-columns: 1fr 1fr; }
+@media (max-width: 900px) { .sv-code { grid-template-columns: 1fr; } }
