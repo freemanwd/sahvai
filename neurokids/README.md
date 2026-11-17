@@ -1,6 +1,8 @@
 # NeuroKids
 
-**https://freemanwd.github.io/sahvai/neurokids/**
+**https://freemanwd.github.io/NeuroKids/**
+
+Part of [NeuroKids Research](https://freemanwd.github.io/sahvai/neurokids-research/). A mirror also runs at https://freemanwd.github.io/sahvai/neurokids/.
 
 Ventricular system segmentation for **paediatric hydrocephalus** on head CT, running entirely in the browser.
 Drop in a DICOM study (folder, zip or loose files) or a NIfTI volume. NeuroKids picks the axial head series, segments the ventricles slice by slice, reports the ventricular volume, and lets you scroll through the masks and download them.
@@ -53,7 +55,7 @@ To get a real model:
 
 Other published CT ventricle models worth requesting from their authors:
 
-- **Da Mutten R, Staartjes VE, et al.** (University Hospital Zürich): YOLOv5 detection plus a 2D U-Net for ventricular subregions on CT. *Brain and Spine* 2024 ([doi:10.1016/j.bas.2024.103478](https://doi.org/10.1016/j.bas.2024.103478)); *NeuroImage: Reports* 2026 ([doi:10.1016/j.ynirp.2026.100325](https://doi.org/10.1016/j.ynirp.2026.100325)). The [GitHub repo](https://github.com/raffaele7/Ventricle) holds only a readme. The weights ship inside a Windows `.exe` with no stated licence, and were trained on shunted adults (mean age about 69). They can't be redistributed here without the authors' permission. The architecture would port to the browser, though its multi-class, two-stage output needs a small adapter.
+- **Ventricle** (Da Mutten R, Staartjes VE, et al., Zürich): see [Related programs](#related-programs). Its weights could run in the browser if the authors grant permission; the multi-class, two-stage output would need a small adapter.
 
 Any ONNX model with this contract works:
 
@@ -61,6 +63,27 @@ Any ONNX model with this contract works:
 - output `prob`: float32 `[N, 1, 512, 512]`, probability of ventricular CSF
 
 ImageNet normalisation and the 3-channel repeat happen inside the graph (`tools/neurokids_model.py`, `BrowserWrapper`).
+
+## Related programs
+
+Other free tools that hydrocephalus researchers may want to consider alongside NeuroKids:
+
+### Ventricle (University Hospital Zürich)
+
+**https://github.com/raffaele7/Ventricle**
+
+A fully automated pipeline for **ventricular subregion volumetry on head CT**. It labels the frontal, temporal and posterior horns, the body of each lateral ventricle, the atria, and the third and fourth ventricles. It uses YOLOv5 object detection followed by a 2D U-Net, packaged as a stand-alone **Windows application** (PyQt `.exe`): choose a folder of DICOM scans and click *Analyze Ventricles*. No coding is needed. The download link is in the repository's readme.
+
+Things to know before using it:
+- It was developed and validated in **adults** shunted for hydrocephalus (mean age about 69), so check its performance on paediatric scans before relying on it.
+- It runs locally on Windows. NeuroKids runs in any modern browser.
+- The repository states no licence; contact the authors about research or redistribution terms.
+
+Please cite:
+- Da Mutten R, Zanier O, Carretta A, Palandri G, Bottini M, de Wilde D, Schneider UC, Regli L, Serra C, Staartjes VE. *Fully automated volumetry of ventricular subregions on computed tomography using object detection and semantic segmentation.* NeuroImage: Reports 2026;6(1):100325. [doi:10.1016/j.ynirp.2026.100325](https://doi.org/10.1016/j.ynirp.2026.100325)
+- *Ventricular volume and width quantification using deep convolutional networks incorporated in a graphical user interface.* Brain and Spine 2024;4:103478. [doi:10.1016/j.bas.2024.103478](https://doi.org/10.1016/j.bas.2024.103478)
+
+NeuroKids does not include Ventricle's code or weights.
 
 ## Outputs
 
