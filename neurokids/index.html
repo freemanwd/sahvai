@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NeuroKids · paediatric hydrocephalus CT, in the browser</title>
+<meta name="description" content="Load a head CT and segment the ventricular system for paediatric hydrocephalus research, entirely in the browser.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%2314b8a6'/%3E%3Cpath d='M11 18c0-3 2-6 5-6s5 3 5 6' stroke='%23fff' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<script src="coi-serviceworker.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <header>
+    <div class="brand">
+      <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="#14b8a6"/><ellipse cx="24" cy="25" rx="13" ry="15" fill="none" stroke="#0b1f1d" stroke-width="2.5"/><path d="M17 27c0-4 3-7 7-7s7 3 7 7c0 2-2 3-3.5 1.5-1-1-2-1.5-3.5-1.5s-2.5.5-3.5 1.5C18.9 30 17 29 17 27z" fill="#0b1f1d"/></svg>
+      <div>
+        <h1>NeuroKids</h1>
+        <p class="tag">Ventricular segmentation for paediatric hydrocephalus · head CT · runs in your browser</p>
+      </div>
+    </div>
+    <p class="lede">Load a head CT (DICOM folder, zip or NIfTI). NeuroKids finds the axial head series, segments the ventricular system slice by slice with the
+      <a href="https://github.com/fast-radiology/hydrocephalus">fast-radiology/hydrocephalus</a> pipeline, and reports ventricular volume.
+      The DICOM engine and in-browser inference come from <a href="https://github.com/jarrelscy/radar-web">RADAR in the browser</a>.</p>
+  </header>
+
+  <aside class="inspired" aria-label="Inspiration">
+    <p>We were inspired to build these education and research tools by <a href="https://neurokids.org/"><b>NeuroKids</b></a>, a non-profit for children with hydrocephalus and spina bifida,
+      and by <b>Dr Giselle Coelho</b> and <b>Dr Benjamin Warf</b>. NeuroKids (this site) is an independent research project and is not run by or affiliated with NeuroKids.org.</p>
+  </aside>
+
+  <section class="notice" aria-label="Disclaimers">
+    <div class="warn">
+      <h2>Research use only</h2>
+      <p>Not a medical device. Not validated or approved for clinical use. Do not use for diagnosis, shunt decisions or any other clinical decision.</p>
+    </div>
+    <div class="ok">
+      <h2>Images stay on this computer</h2>
+      <p>Files are read and processed inside this tab with your CPU or GPU. Nothing is uploaded. Models are fetched once and cached.</p>
+    </div>
+    <div class="model-note" id="modelNote"></div>
+  </section>
+
+  <section class="controls">
+    <fieldset>
+      <legend>Methods</legend>
+      <label><input type="checkbox" id="mAi"> AI U-Net</label>
+      <label><input type="checkbox" id="mCsf" checked> CSF threshold baseline</label>
+    </fieldset>
+    <fieldset>
+      <legend>AI model</legend>
+      <select id="model"></select>
+      <label class="btn small">Load .onnx<input id="modelFile" type="file" accept=".onnx"></label>
+    </fieldset>
+    <fieldset>
+      <legend>Compute</legend>
+      <div class="seg" role="radiogroup" aria-label="Compute device">
+        <label><input type="radio" name="device" value="auto" checked> Auto</label>
+        <label><input type="radio" name="device" value="webgpu"> WebGPU</label>
+        <label><input type="radio" name="device" value="wasm"> CPU</label>
+      </div>
+      <span id="caps" class="caps"></span>
+    </fieldset>
+  </section>
+
+  <section id="drop" class="drop" tabindex="0">
+    <p><b>Drop a head CT here</b>: a DICOM folder, a zip of a DICOM study, loose DICOM files, or a .nii / .nii.gz volume.</p>
+    <p class="hint">From a study, the largest axial series labelled head/brain with a soft-tissue kernel is used. Uncompressed, deflated, RLE, JPEG lossless, JPEG-LS, JPEG 2000 and HTJ2K DICOM are supported.</p>
+    <div class="buttons">
+      <label class="btn">Choose file(s)<input id="files" type="file" multiple accept=".zip,.nii,.gz,.dcm,application/zip,application/dicom,*/*"></label>
+      <label class="btn">Choose folder<input id="folder" type="file" webkitdirectory></label>
+      <button class="btn ghost" id="sample">Try the sample slices</button>
+    </div>
+  </section>
+
+  <section id="status" class="status" hidden>
+    <div class="stage"><span id="stage">Starting</span><span id="pct"></span></div>
+    <div class="bar"><i id="bar"></i></div>
+  </section>
+
+  <section id="results" hidden>
+    <div class="cards" id="cards"></div>
+    <div class="viewer">
+      <div class="canvaswrap"><canvas id="cv"></canvas><div class="orient l">R</div><div class="orient r">L</div><div class="orient t">A</div><div class="orient b">P</div></div>
+      <aside class="vtools">
+        <label class="slice">Slice <b id="zlab"></b><input type="range" id="z" min="0" value="0"></label>
+        <div class="row">
+          <span>Window</span>
+          <select id="win">
+            <option value="40,80">Brain (40/80)</option>
+            <option value="0,200">Model view (−100…100)</option>
+            <option value="75,215">Subdural (75/215)</option>
+            <option value="600,2800">Bone (600/2800)</option>
+          </select>
+        </div>
+        <label class="row"><input type="checkbox" id="oAi" checked> <i class="sw ai"></i> AI mask</label>
+        <label class="row"><input type="checkbox" id="oCsf" checked> <i class="sw csf"></i> CSF baseline</label>
+        <label class="row">Opacity <input type="range" id="alpha" min="0" max="1" step="0.05" value="0.45"></label>
+        <button class="btn small" id="jump">Go to largest ventricle slice</button>
+        <p class="hint">Scroll or use ↑ ↓ to change slice. Radiological view: patient right on the left.</p>
+        <div id="sliceInfo" class="sliceinfo"></div>
+      </aside>
+    </div>
+    <div class="dl">
+      <button class="btn small" id="dlCsv">Per-slice areas (CSV)</button>
+      <button class="btn small" id="dlAi">AI mask (.nii.gz)</button>
+      <button class="btn small" id="dlCsf">Baseline mask (.nii.gz)</button>
+      <button class="btn small" id="dlCt">CT volume (.nii.gz)</button>
+      <button class="btn small" id="dlJson">Summary (JSON)</button>
+    </div>
+    <p class="hint">Masks and CT are written in the same grid (LPS-ordered, RAS affine), so they overlay in 3D Slicer, ITK-SNAP or nibabel.</p>
+  </section>
+
+  <section class="about">
+    <details>
+      <summary>How it works</summary>
+      <ol>
+        <li><b>Load.</b> DICOM headers are grouped into series; the axial head series is decoded (Hounsfield units) and reoriented to standard axial display.</li>
+        <li><b>AI U-Net.</b> Each slice is windowed to −100…100 HU, histogram-equalised (bit-exact with OpenCV) and segmented at 512 × 512 by a 2D U-Net exported to ONNX and run with ONNX Runtime Web (WebGPU or multi-threaded WebAssembly).
+          The published architecture is a ResNet-34 U-Net with self-attention trained with generalised Dice loss. A voxel is kept as ventricle where P &gt; 0.5, then the paper's slice-to-slice consistency filter is applied.</li>
+        <li><b>CSF baseline (no AI).</b> Brain is found per slice as the largest soft-tissue region inside bone; voxels at −5…16 HU more than 3 mm inside the brain edge are grouped in 3D and the central components are kept. Expect it to include some cisternal CSF and to miss slit-like ventricles.</li>
+        <li><b>Measure.</b> Ventricular volume = voxel count × voxel volume. The agreement between the two masks is shown as a Dice coefficient.</li>
+      </ol>
+      <p><b>Bring your own weights.</b> No trained weights for the published model are public. Train on your labelled scans with <code>tools/train.py</code>, export with <code>tools/export_onnx.py</code>, then use <em>Load .onnx</em> or add the file to <code>lib/models.js</code>. See the <a href="https://github.com/freemanwd/sahvai/tree/main/neurokids#readme">README</a>.</p>
+    </details>
+  </section>
+
+  <details id="logbox">
+    <summary>Log</summary>
+    <pre id="log"></pre>
+  </details>
+
+  <footer>
+    <p>Research use only. Not a medical device. Images are processed locally and never uploaded.</p>
+    <p>Inspired by <a href="https://neurokids.org/">NeuroKids.org</a> and Drs Giselle Coelho and Benjamin Warf.</p>
+    <p>Segmentation pipeline: Klimont M, Flieger M, Rzeszutek J, et al. <a href="https://doi.org/10.1155/2019/3059170">Automated ventricular system segmentation in paediatric patients treated for hydrocephalus using deep learning methods</a>. BioMed Res Int 2019; code at <a href="https://github.com/fast-radiology/hydrocephalus">fast-radiology/hydrocephalus</a> (MIT).
+      DICOM engine and browser runtime adapted from <a href="https://github.com/jarrelscy/radar-web">jarrelscy/radar-web</a> (CC BY-NC-SA 4.0); RADAR model card at <a href="https://huggingface.co/jarrelscy/radar-onnx">jarrelscy/radar-onnx</a>.
+      NeuroKids is released under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>. <a href="https://github.com/freemanwd/sahvai/tree/main/neurokids">Source</a>. Part of <a href="../neurokids-research/">NeuroKids Research</a>.</p>
+  </footer>
+</main>
+<script type="module" src="app.js"></script>
+</body>
+</html>

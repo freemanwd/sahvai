@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="NeuroKids Research: a network of centers advancing pediatric hydrocephalus research, imaging AI and open measurement tools.">
+    <title>NeuroKids Research | Pediatric Hydrocephalus</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%230051A5'/%3E%3Cpath d='M10 19c0-4 3-7 6-7s6 3 6 7' stroke='%2300D4FF' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="sahvera.css">
+    <link rel="stylesheet" href="nk.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="nav">
+        <div class="container">
+            <div class="nav-content">
+                <a href="#" class="logo">NeuroKids Research</a>
+                <div class="nav-links">
+                    <a href="#about">About</a>
+                    <a href="#sites">Sites</a>
+                    <a href="#research">Research</a>
+                    <a href="#tools">Tools</a>
+                    <a href="https://neurokids.org/" target="_blank" rel="noopener">NeuroKids.org</a>
+                    <a href="../neurokids/" target="_blank" rel="noopener" class="nav-tools-link">Hydrocephalus Measurement Tool</a>
+                </div>
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Globe hero -->
+    <section class="sv-hero">
+        <div class="container">
+            <div class="sv-hero-grid">
+                <div class="sv-hero-text">
+                    <p class="sv-eyebrow">Pediatric hydrocephalus research network</p>
+                    <h1>NeuroKids Research</h1>
+                    <p class="sv-lead">Centers in North and South America working together on pediatric hydrocephalus: measuring the ventricles the same way everywhere, sharing open tools, and studying what helps children do well after treatment.</p>
+                    <div class="sv-counters">
+                        <div><span>3</span><small>Sites</small></div>
+                        <div><span>2</span><small>Countries</small></div>
+                        <div><span>2</span><small>Continents</small></div>
+                    </div>
+                    <div class="hero-actions">
+                        <a href="#sites" class="btn btn-primary">Explore the sites</a>
+                        <a href="../neurokids/" target="_blank" rel="noopener" class="btn btn-secondary">Open the measurement tool</a>
+                    </div>
+                </div>
+                <div class="sv-globe-wrap">
+                    <canvas id="globe" aria-label="Interactive globe showing NeuroKids Research sites. Drag to rotate." role="img"></canvas>
+                    <div class="sv-globe-label" id="globeLabel" aria-live="polite"></div>
+                    <p class="sv-globe-hint">Drag to rotate · select a site to fly to it</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Inspiration -->
+    <section id="about" class="section nk-inspired">
+        <div class="container">
+            <div class="nk-inspired-card">
+                <div>
+                    <p class="sv-eyebrow sv-eyebrow-dark">Our inspiration</p>
+                    <h2>Inspired by NeuroKids</h2>
+                    <p>We were inspired to build these education and research tools by <a href="https://neurokids.org/" target="_blank" rel="noopener"><strong>NeuroKids</strong></a>, a non-profit that helps children with hydrocephalus and spina bifida live longer and better lives, and by <strong>Dr Giselle Coelho</strong> and <strong>Dr Benjamin Warf</strong>.</p>
+                    <p class="nk-small">NeuroKids Research is an independent academic collaboration and is not run by NeuroKids.org.</p>
+                </div>
+                <a href="https://neurokids.org/" target="_blank" rel="noopener" class="btn btn-primary btn-large">Visit NeuroKids.org</a>
+            </div>
+            <div class="nk-about-grid">
+                <div>
+                    <h3>Why hydrocephalus</h3>
+                    <p>Hydrocephalus is one of the most common reasons a child needs brain surgery, and in many places the treatment a child gets depends on where they are born. Shunts work but often fail. Endoscopic options such as ETV/CPC can avoid lifelong shunt dependence for many infants.</p>
+                </div>
+                <div>
+                    <h3>Why measure</h3>
+                    <p>Decisions about shunts and endoscopy still lean on eyeballed scans and two-dimensional indices. Ventricular <em>volume</em>, measured the same way at every center, gives a shared language for follow-up, research and training.</p>
+                </div>
+                <div>
+                    <h3>How we work</h3>
+                    <p>De-identified imaging, open-source tools that run in a web browser with no upload, and shared methods that low-resource centers can use as easily as academic hospitals.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sites -->
+    <section id="sites" class="section section-alt">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Participating Sites</h2>
+                <p class="section-subtitle">Centers and investigators focused on pediatric hydrocephalus</p>
+            </div>
+            <div class="sv-site-tabs" id="siteTabs" role="tablist" aria-label="Filter sites">
+                <button class="sv-chip active" data-filter="all" role="tab" aria-selected="true">All</button>
+                <button class="sv-chip" data-filter="na" role="tab" aria-selected="false">North America</button>
+                <button class="sv-chip" data-filter="sa" role="tab" aria-selected="false">South America</button>
+            </div>
+
+            <div class="sv-site-grid" id="siteGrid">
+
+                <article class="sv-site" data-region="na" data-site="jacksonville">
+                    <div class="sv-site-head">
+                        <span class="sv-dot sv-dot-hub"></span>
+                        <div>
+                            <h3>Mayo Clinic Florida</h3>
+                            <p class="sv-place">Jacksonville, Florida, USA</p>
+                        </div>
+                        <span class="sv-tag sv-tag-hub">Coordinating center</span>
+                    </div>
+                    <div class="sv-people">
+                        <div class="sv-person">
+                            <div class="sv-avatar"><span>WF</span><img src="assets/freeman.jpg" alt="Dr W. David Freeman" onerror="this.remove()"></div>
+                            <div>
+                                <strong>W. David Freeman, MD</strong>
+                                <small>Professor of Neurology and Neurosurgery<br>Imaging AI and volumetrics</small>
+                            </div>
+                        </div>
+                        <div class="sv-person">
+                            <div class="sv-avatar"><span>GC</span><img src="assets/coelho.jpg" alt="Dr Giselle Coelho" onerror="this.remove()"></div>
+                            <div>
+                                <strong>Giselle Coelho, MD, PhD</strong>
+                                <small>Pediatric Neurosurgeon<br>ASTRAL Program Director</small>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="sv-note">Coordinates the network and builds the open, in-browser CT measurement tools, drawing on the SAHVAI Lab's work on head CT volumetrics. Dr Coelho's work centers on pediatric neuroendoscopy and realistic simulators for training surgeons.</p>
+                    <button class="sv-fly" data-fly="jacksonville">Show on globe</button>
+                </article>
+
+                <article class="sv-site" data-region="na" data-site="boston">
+                    <div class="sv-site-head">
+                        <span class="sv-dot"></span>
+                        <div>
+                            <h3>Boston Children's Hospital</h3>
+                            <p class="sv-place">Boston, Massachusetts, USA</p>
+                        </div>
+                        <span class="sv-tag">Pediatric neurosurgery</span>
+                    </div>
+                    <div class="sv-people">
+                        <div class="sv-person">
+                            <div class="sv-avatar"><span>BW</span><img src="assets/benjamin-warf.jpg" alt="Dr Benjamin C. Warf" onerror="this.remove()"></div>
+                            <div>
+                                <strong>Benjamin C. Warf, MD</strong>
+                                <small>Director, Neonatal and Congenital Anomaly Neurosurgery<br>Professor of Neurosurgery, Harvard Medical School · <a href="https://www.childrenshospital.org/providers/benjamin-c-warf" target="_blank" rel="noopener">Profile</a></small>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="sv-note">Dr Warf pioneered ETV/CPC (endoscopic third ventriculostomy with choroid plexus cauterization) for infant hydrocephalus and chairs the board of NeuroKids.</p>
+                    <button class="sv-fly" data-fly="boston">Show on globe</button>
+                </article>
+
+                <article class="sv-site" data-region="sa" data-site="brazil">
+                    <div class="sv-site-head">
+                        <span class="sv-dot"></span>
+                        <div>
+                            <h3>Santa Casa do Pará</h3>
+                            <p class="sv-place">Belém, Pará, Brazil</p>
+                        </div>
+                        <span class="sv-tag">Research site</span>
+                    </div>
+                    <div class="sv-people">
+                        <div class="sv-person">
+                            <div class="sv-avatar"><span>SR</span><img src="assets/simone-rogerio.jpg" alt="Dr Simone Rogério" onerror="this.remove()"></div>
+                            <div>
+                                <strong>Simone Rogério, MD</strong>
+                                <small>Pediatric Neurosurgery<br><a href="https://www.instagram.com/simonerogerio" target="_blank" rel="noopener">@simonerogerio</a></small>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="sv-note">Amazon-region site in northern Brazil for pediatric hydrocephalus imaging and outcomes research.</p>
+                    <button class="sv-fly" data-fly="brazil">Show on globe</button>
+                </article>
+
+            </div>
+            <p class="sv-footnote">Interested in joining? Centers that treat children with hydrocephalus and can share de-identified head CT or MRI are welcome. <a href="#contact">Get in touch</a>.</p>
+        </div>
+    </section>
+
+    <!-- Research -->
+    <section id="research" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Research Focus</h2>
+                <p class="section-subtitle">From a shared ventricular measure to better outcomes for children</p>
+            </div>
+            <div class="nk-research-grid">
+                <article class="sv-future-card">
+                    <p class="sv-eyebrow sv-eyebrow-dark">Imaging AI</p>
+                    <h3>Ventricular volumetrics</h3>
+                    <p>Automatic segmentation of the ventricles on head CT to measure volume in milliliters, validated across centers and scanners.</p>
+                    <ul class="sv-chips"><li>Head CT</li><li>Segmentation</li><li>Volume (mL)</li></ul>
+                </article>
+                <article class="sv-future-card">
+                    <p class="sv-eyebrow sv-eyebrow-dark">Treatment</p>
+                    <h3>ETV/CPC and shunt outcomes</h3>
+                    <p>How ventricular size changes after endoscopic treatment or shunting, and which imaging signs go with success or failure.</p>
+                    <ul class="sv-chips"><li>ETV/CPC</li><li>Shunts</li><li>Follow-up imaging</li></ul>
+                </article>
+                <article class="sv-future-card">
+                    <p class="sv-eyebrow sv-eyebrow-dark">Education</p>
+                    <h3>Simulation and training</h3>
+                    <p>Simulators and open teaching tools that help surgeons learn neuroendoscopy and help trainees read pediatric head imaging.</p>
+                    <ul class="sv-chips"><li>Neuroendoscopy</li><li>Simulators</li><li>Teaching cases</li></ul>
+                </article>
+                <article class="sv-future-card">
+                    <p class="sv-eyebrow sv-eyebrow-dark">Global access</p>
+                    <h3>Tools that work anywhere</h3>
+                    <p>Software that runs in an ordinary web browser, offline after first load and with no patient data leaving the computer, so low-resource centers can use it too.</p>
+                    <ul class="sv-chips"><li>Browser-based</li><li>No upload</li><li>Open source</li></ul>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tools -->
+    <section id="tools" class="section section-alt">
+        <div class="container">
+            <div class="nk-tool">
+                <div>
+                    <p class="sv-eyebrow sv-eyebrow-dark">Web tools</p>
+                    <h2>NeuroKids hydrocephalus measurement tool</h2>
+                    <p>Load a head CT (DICOM or NIfTI) and segment the ventricular system in your browser. Scroll through the masks, read the ventricular volume, and download the masks for 3D Slicer or ITK-SNAP. Images are processed on your own computer and never uploaded.</p>
+                    <p class="nk-small">Research use only. Not a medical device. The AI model is a pipeline test until trained weights are released; a non-AI CSF baseline is included.</p>
+                    <div class="hero-actions">
+                        <a href="../neurokids/" target="_blank" rel="noopener" class="btn btn-primary">Open the tool</a>
+                        <a href="https://github.com/freemanwd/sahvai/tree/main/neurokids" target="_blank" rel="noopener" class="btn nk-outline">Source on GitHub</a>
+                    </div>
+                </div>
+                <div class="nk-tool-art" aria-hidden="true">
+                    <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+                        <defs><radialGradient id="sk" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="#3a4250"/><stop offset="1" stop-color="#151a22"/></radialGradient></defs>
+                        <rect width="240" height="240" rx="18" fill="#0b0f14"/>
+                        <ellipse cx="120" cy="122" rx="86" ry="100" fill="#e9eef3"/>
+                        <ellipse cx="120" cy="122" rx="78" ry="92" fill="url(#sk)"/>
+                        <path d="M92 82c-14 10-18 34-10 52 6 12 18 14 26 6 6-7 4-20 2-30-2-12-6-24-18-28zM148 82c14 10 18 34 10 52-6 12-18 14-26 6-6-7-4-20-2-30 2-12 6-24 18-28z" fill="#22d3ee" opacity=".85"/>
+                        <rect x="114" y="140" width="12" height="22" rx="5" fill="#22d3ee" opacity=".85"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="section">
+        <div class="container">
+            <div class="consortium-content">
+                <div class="section-header">
+                    <h2 class="section-title">Join NeuroKids Research</h2>
+                    <p class="section-subtitle">Bring your center into the network</p>
+                </div>
+                <div class="consortium-benefits">
+                    <h3>What sites contribute and receive</h3>
+                    <ul>
+                        <li>Shared, de-identified pediatric hydrocephalus imaging under a data-use agreement</li>
+                        <li>Free browser-based measurement tools for research and teaching</li>
+                        <li>Collaboration on validation studies and publications</li>
+                        <li>Training resources in imaging and neuroendoscopy</li>
+                    </ul>
+                </div>
+                <div class="consortium-cta">
+                    <a href="mailto:freeman.william1@mayo.edu?subject=NeuroKids%20Research%20inquiry" class="btn btn-primary btn-large">Contact us</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>NeuroKids Research</h4>
+                    <p>Pediatric hydrocephalus research network</p>
+                    <p>Coordinated from Mayo Clinic Florida</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="#sites">Sites</a>
+                    <a href="#research">Research</a>
+                    <a href="#tools">Tools</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <a href="https://neurokids.org/" target="_blank" rel="noopener">NeuroKids.org</a>
+                    <a href="../neurokids/" target="_blank" rel="noopener">Hydrocephalus Measurement Tool</a>
+                    <a href="https://freemanwd.github.io/sahvai/" target="_blank" rel="noopener">SAHVAI Lab</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 NeuroKids Research. Independent of NeuroKids.org. Research and education only; not medical advice.</p>
+                <p>Inspired by NeuroKids.org and Drs Giselle Coelho and Benjamin Warf.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="vendor/d3-array.min.js"></script>
+    <script src="vendor/d3-geo.min.js"></script>
+    <script src="vendor/topojson-client.min.js"></script>
+    <script src="script.js"></script>
+    <script src="globe.js"></script>
+</body>
+</html>
