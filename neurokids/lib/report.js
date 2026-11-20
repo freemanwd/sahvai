@@ -1,7 +1,7 @@
 // Report exports for NeuroKids: Markdown, plain text, PDF and PNG, in the style of the SAHVAI calculator's export bar.
 // The reports hold measurements and scan geometry only: no names, IDs or dates from the images.
 
-const TOOL_URL = 'https://freemanwd.github.io/NeuroKids/';
+const TOOL_URL = (typeof location !== 'undefined' && /^https?:/.test(location.protocol) && !/localhost|127\.0\.0\.1/.test(location.host)) ? location.origin + location.pathname : 'https://freemanwd.github.io/NeuroKids/';
 const DISCLAIMER = 'Research and education use only. Not a medical device; not for diagnosis, shunt or other treatment decisions.';
 const REF = 'Klimont M, Flieger M, Rzeszutek J, et al. Automated ventricular system segmentation in paediatric patients treated for hydrocephalus using deep learning methods. BioMed Res Int 2019;2019:3059170. doi:10.1155/2019/3059170';
 const f1 = x => x == null || !isFinite(x) ? '—' : (+x).toFixed(1);
