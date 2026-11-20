@@ -255,15 +255,25 @@ function saveBlob(blob, name) { const a = Object.assign(document.createElement('
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 const opt = (choices, v) => `<option value="">—</option>` + choices.map(([c, l]) => `<option value="${c}"${String(v ?? '') === c ? ' selected' : ''}>${esc(l)}</option>`).join('');
 
+function measText(R) {
+  const st = R && R.stats; if (!st) return 'No scan loaded yet. Load one above to add it to the dataset; the dataset tools below work now.';
+  const m = [st.ai_ml != null ? `AI ${st.ai_ml.toFixed(1)} mL${R.aiDemo ? ' (demo weights)' : ''}` : '', st.csf_ml != null ? `CSF baseline ${st.csf_ml.toFixed(1)} mL` : ''].filter(Boolean).join(' · ');
+  return `This scan: ${m || 'no volumes'}`;
+}
+// a new scan: refresh the box's summary line and age, keeping what the user typed
+export function updateResearch(el, R) {
+  el.querySelector('.meas').textContent = measText(R);
+  const age = dicomAgeMonths(R && R.info && R.info.patient_age), a = el.querySelector('.c-age_months');
+  if (age != null && !a.value) { a.value = age; a.dispatchEvent(new Event('input', { bubbles: true })); }
+}
 // mountResearch(host, getR): getR() returns the current NeuroKids result
 export function mountResearch(host, getR) {
   const s = settings(), R0 = getR() || {}, age = dicomAgeMonths(R0.info?.patient_age);
   const el = document.createElement('details'); el.className = 'rx'; el.id = 'researchBox';
-  const st = R0.stats || {};
-  const meas = [st.ai_ml != null ? `AI ${st.ai_ml.toFixed(1)} mL${R0.aiDemo ? ' (demo weights)' : ''}` : '', st.csf_ml != null ? `CSF baseline ${st.csf_ml.toFixed(1)} mL` : ''].filter(Boolean).join(' · ');
+
   el.innerHTML = `<summary>&#128300; Research export <span class="sub">add this scan to your site's de-identified hydrocephalus dataset, or download it</span></summary>
   <div class="in">
-    <div class="meas">This scan: ${esc(meas || 'no volumes')}</div>
+    <div class="meas">${esc(measText(R0))}</div>
     <div class="row">
       <label>Site code<input class="site w6" maxlength="12" placeholder="e.g. MCF" value="${esc(s.siteId || '')}"></label>
       <label>Country<input class="country w4" maxlength="2" placeholder="US" value="${esc(s.country || '')}"></label>

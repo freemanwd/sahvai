@@ -16,7 +16,7 @@
       <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="#14b8a6"/><ellipse cx="24" cy="25" rx="13" ry="15" fill="none" stroke="#0b1f1d" stroke-width="2.5"/><path d="M17 27c0-4 3-7 7-7s7 3 7 7c0 2-2 3-3.5 1.5-1-1-2-1.5-3.5-1.5s-2.5.5-3.5 1.5C18.9 30 17 29 17 27z" fill="#0b1f1d"/></svg>
       <div>
         <h1>NeuroKids</h1>
-        <p class="tag">Ventricular segmentation for paediatric hydrocephalus · head CT · runs in your browser</p>
+        <p class="tag">Ventricular segmentation for paediatric hydrocephalus · head CT · runs in your browser · <a href="#research-tools">Research and export tools ↓</a></p>
       </div>
     </div>
     <p class="lede">Load a head CT (DICOM folder, zip or NIfTI). NeuroKids finds the axial head series, segments the ventricular system slice by slice with the
@@ -101,15 +101,6 @@
         <div id="sliceInfo" class="sliceinfo"></div>
       </aside>
     </div>
-    <div class="export-bar" role="toolbar" aria-label="Export">
-      <button class="export-btn btn-md" id="exMd">&#x1f4dd; Export Markdown</button>
-      <button class="export-btn btn-txt" id="exTxt">&#x1f4c4; Export Text</button>
-      <button class="export-btn btn-pdf" id="exPdf">&#x1f4d5; Export PDF</button>
-      <button class="export-btn btn-png" id="exPng">&#x1f5bc; Export PNG</button>
-      <button class="export-btn btn-rx" id="exRx" title="Add these measurements to your site's de-identified research dataset">&#x1f52c; Research export</button>
-    </div>
-    <p class="hint exhint">Reports use the slice shown in the viewer. They hold measurements and scan geometry only, no names or dates.</p>
-    <div id="researchHost"></div>
     <div class="dl">
       <span class="dl-label">Data files</span>
       <button class="btn small" id="dlCsv">Per-slice areas (CSV)</button>
@@ -119,6 +110,20 @@
       <button class="btn small" id="dlJson">Summary (JSON)</button>
     </div>
     <p class="hint">Masks and CT are written in the same grid (LPS-ordered, RAS affine), so they overlay in 3D Slicer, ITK-SNAP or nibabel.</p>
+  </section>
+
+  <section id="research-tools" class="rtools" aria-labelledby="rtTitle">
+    <h2 id="rtTitle">Research and export tools</h2>
+    <p class="hint rt-lede">Reports (Markdown, text, PDF, PNG) need a scan: load one above or press <b>Try the sample slices</b>. The <b>Research export</b> works now: set your site code, back up the site key, and download your site dataset, data dictionary or REDCap dictionary.</p>
+    <div class="export-bar" role="toolbar" aria-label="Export">
+      <button class="export-btn btn-md" id="exMd">&#x1f4dd; Export Markdown</button>
+      <button class="export-btn btn-txt" id="exTxt">&#x1f4c4; Export Text</button>
+      <button class="export-btn btn-pdf" id="exPdf">&#x1f4d5; Export PDF</button>
+      <button class="export-btn btn-png" id="exPng">&#x1f5bc; Export PNG</button>
+      <button class="export-btn btn-rx" id="exRx" title="Add these measurements to your site's de-identified research dataset">&#x1f52c; Research export</button>
+    </div>
+    <p class="hint exhint" id="exHint">Load a scan to enable the report buttons. Reports use the slice shown in the viewer and hold measurements and scan geometry only, no names or dates.</p>
+    <div id="researchHost"></div>
   </section>
 
   <section class="about">

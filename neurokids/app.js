@@ -2,7 +2,7 @@ import { filesFromDataTransfer } from './lib/source.js';
 import { MODELS } from './lib/models.js';
 import { niftiGz, sliceCsv, save } from './lib/export.js';
 import { toMarkdown, toText, toPDF, toPNG } from './lib/report.js';
-import { mountResearch } from './lib/research.js';
+import { mountResearch, updateResearch } from './lib/research.js';
 
 const $ = id => document.getElementById(id);
 const t0 = performance.now();
@@ -53,6 +53,10 @@ $('modelFile').onchange = async e => {
   $('mAi').checked = true;
 };
 modelOptions();
+
+// research tools are on the page from the start; report buttons wait for a scan
+const REPORT_BTNS = ['exMd', 'exTxt', 'exPdf', 'exPng'];
+function exportState() { for (const id of REPORT_BTNS) $(id).disabled = !R; $('exHint').textContent = R ? 'Reports use the slice shown in the viewer. They hold measurements and scan geometry only, no names or dates.' : 'Load a scan to enable the report buttons. Reports use the slice shown in the viewer and hold measurements and scan geometry only, no names or dates.'; }
 
 // ---- worker
 function startWorker() {
@@ -106,7 +110,8 @@ function show() {
   $('oAi').parentElement.style.display = R.masks.ai ? '' : 'none';
   $('oCsf').parentElement.style.display = R.masks.csf ? '' : 'none';
   setupViewer();
-  mountResearch($('researchHost'), () => R);
+  if ($('researchBox')) updateResearch($('researchBox'), R); else mountResearch($('researchHost'), () => R);
+  exportState();
   $('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -205,3 +210,6 @@ $('exTxt').onclick = () => R && save(new Blob([toText(R, z())], { type: 'text/pl
 $('exPdf').onclick = async () => { if (!R) return; try { await toPDF(R, z(), cv); } catch (e) { log(`PDF export failed: ${e.message}`); $('logbox').open = true; } };
 $('exPng').onclick = async () => { if (!R) return; try { await toPNG(R, z(), cv); } catch (e) { log(`PNG export failed: ${e.message}`); $('logbox').open = true; } };
 $('exRx').onclick = () => { const b = $('researchBox'); if (!b) return; b.open = !b.open; if (b.open) b.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); };
+
+mountResearch($('researchHost'), () => R);
+exportState();

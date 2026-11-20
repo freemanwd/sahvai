@@ -117,3 +117,9 @@ footer { margin-top: 28px; color: var(--dim); font-size: 13px; border-top: 1px s
 .rx .msg.err { color: #fca5a5; }
 .rx .fine { color: var(--dim); font-size: 12.5px; margin: 8px 0 0; }
 .rx .meas { color: var(--text); margin: 2px 0 6px; }
+.rtools { margin-top: 22px; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px 6px; }
+.rtools h2 { margin: 0 0 4px; font-size: 18px; color: var(--acc2); }
+.rtools .rt-lede { margin: 0 0 4px; }
+.rtools .export-bar { background: transparent; border: 0; padding: 8px 0 0; margin-top: 0; }
+.export-btn:disabled { opacity: .4; cursor: not-allowed; transform: none; box-shadow: none; }
+.tag a { color: var(--acc2); }
