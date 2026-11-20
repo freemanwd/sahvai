@@ -92,7 +92,17 @@ NeuroKids does not include Ventricle's code or weights.
 - **Export PDF:** the same report on one A4 page, with the slice shown in the viewer and its overlays (jsPDF, bundled locally)
 - **Export PNG:** a 1600 × 900 summary card with the slice and the key numbers, ready for slides
 - **Research export** (adapted from the SAHVAI Lab research export): adds the scan to the site's de-identified pediatric hydrocephalus dataset, kept in the browser (IndexedDB), or downloads it as a zip (`record.csv`, `data_dictionary.csv`, `provenance.json`, `fhir_bundle.json`, NIfTI masks). The whole site dataset exports as CSV, JSON Lines, an HL7 FHIR R4 bundle, a data dictionary or a REDCap data dictionary.
-  - Fields: site, pseudonymised subject, scan number and timing, days from the index procedure, scan geometry, AI and baseline volumes, Dice, optional reader measurements (reference volume, Evans' index, FOHR), optional clinical variables (age in months, sex, gestational age, head circumference, etiology, index treatment such as ETV/CPC or shunt), and outcome columns to fill in later.
+  - Fields: site, pseudonymised subject, scan number and timing, days from the index procedure, scan geometry, AI and baseline volumes, Dice, reader measurements, clinical variables, and outcome columns to fill in later.
+  - **Clinical and reader variables follow NINDS Common Data Elements where one exists.** NINDS has no dedicated pediatric hydrocephalus CDE set, so the fields draw on several:
+    - age and sex (NINDS General CDEs)
+    - gestational age (Cerebral Palsy CDE, Supplemental – Highly Recommended; NeuroRehab infant/pediatric CDE)
+    - birth weight (C00311)
+    - hydrocephalus family history, treated/untreated (Chiari I CDEs C22448/C22447)
+    - ventriculomegaly on imaging (C21757)
+    - Evans' index (C60636)
+    - shunt types from the NINDS Assessment of Shunt Function CRF (F2158)
+    - shunt dependence at follow-up (SAH Shunt Dependency CRF F2482, Exploratory)
+  - **Hydrocephalus-specific fields without a CDE:** etiology in Hydrocephalus Clinical Research Network categories, previous shunt, head circumference, fontanelle, FOHR, and the **ETV Success Score**, computed from age, etiology and previous shunt (Kulkarni et al., J Pediatr 2009). The data dictionary lists each field's CDE name, ID and source, and the FHIR bundle carries the CDE IDs.
   - Privacy: the study ID is turned into a pseudonym on the computer (HMAC-SHA-256 with a site key that can be backed up and shared across the site's computers). Dates become days from the procedure. Images and names are never exported.
 
 **Data files:** ventricular volume (mL) per method; per-slice areas (CSV); masks and the CT as `.nii.gz` in one shared grid (LPS-ordered voxels, RAS affine), so they overlay in 3D Slicer, ITK-SNAP or nibabel; a JSON summary (series, spacing, volumes, device, timings).

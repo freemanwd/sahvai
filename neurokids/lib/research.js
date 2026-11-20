@@ -19,9 +19,24 @@ const CODE_SYSTEM = SITE_URL + 'fhir/CodeSystem/neurokids-research';
 
 const F = (name, group, type, label, o = {}) => ({ name, group, type, label, ...o });
 const SEX = [['1', 'Male'], ['2', 'Female'], ['3', 'Unknown or not reported']];
-export const ETIOLOGY = [['1', 'Post-hemorrhagic (prematurity / IVH)'], ['2', 'Post-infectious'], ['3', 'Myelomeningocele (spina bifida)'], ['4', 'Aqueductal stenosis'],
-  ['5', 'Other congenital malformation'], ['6', 'Tumor-related'], ['7', 'Other'], ['9', 'Unknown']];
-export const TREATMENT = [['0', 'None yet'], ['1', 'Ventriculoperitoneal or other shunt'], ['2', 'ETV'], ['3', 'ETV/CPC'], ['4', 'Reservoir or subgaleal shunt'], ['5', 'EVD'], ['6', 'Other']];
+// etiology: HCRN registry categories, split so the ETV Success Score (Kulkarni 2009) can be computed
+export const ETIOLOGY = [['1', 'Post-hemorrhagic (IVH of prematurity)'], ['2', 'Post-infectious'], ['3', 'Myelomeningocele (spina bifida)'], ['4', 'Aqueductal stenosis'],
+  ['5', 'Tectal tumor'], ['6', 'Other (non-tectal) brain tumor'], ['7', 'Other congenital (e.g. Dandy-Walker, cyst, encephalocele)'], ['8', 'Other'], ['9', 'Unknown']];
+// index treatment; shunt types follow the NINDS Assessment of Shunt Function CRF (F2158, Chiari CDE)
+export const TREATMENT = [['0', 'None yet'], ['1', 'Ventriculoperitoneal shunt'], ['2', 'Ventriculoatrial shunt'], ['3', 'Ventriculopleural shunt'], ['4', 'ETV'], ['5', 'ETV/CPC'],
+  ['6', 'Ventricular reservoir or subgaleal shunt (temporising)'], ['7', 'External ventricular drain'], ['8', 'Other']];
+const FONTANELLE = [['1', 'Soft / flat'], ['2', 'Full'], ['3', 'Bulging / tense'], ['4', 'Closed'], ['9', 'Not assessed']];
+const FAMHX = [['0', 'No'], ['1', 'Yes, treated'], ['2', 'Yes, untreated'], ['9', 'Unknown']];
+const DEPEND = [['1', 'Yes (shunt)'], ['2', 'No'], ['3', 'ETV / ETV-CPC, no shunt']];
+const YN = [['1', 'Yes'], ['0', 'No']];
+// ETV Success Score: age + etiology + previous shunt (Kulkarni AV et al., J Pediatr 2009;155:254-9)
+export function etvss(ageMonths, etiology, previousShunt) {
+  if (ageMonths === '' || ageMonths == null || !isFinite(+ageMonths) || !etiology || etiology === '9' || previousShunt === '' || previousShunt == null) return null;
+  const m = +ageMonths, a = m < 1 ? 0 : m < 6 ? 10 : m < 12 ? 30 : m < 120 ? 40 : 50;
+  const e = { 2: 0, 1: 20, 3: 20, 6: 20, 4: 30, 5: 30, 7: 30, 8: 30 }[etiology];
+  return a + e + (String(previousShunt) === '1' ? 0 : 10);
+}
+const CDE_CM = 'NINDS Chiari Malformation I CDE', CDE_CP = 'NINDS Cerebral Palsy CDE', CDE_REHAB = 'NINDS NeuroRehab CDE (Infant/Pediatric Demographics)', CDE_GEN = 'NINDS General CDE';
 const SCAN_TIMING = [['1', 'Before treatment'], ['2', 'After treatment (follow-up)'], ['3', 'Suspected treatment failure'], ['9', 'Not known']];
 
 export const FIELDS = [
@@ -51,21 +66,28 @@ export const FIELDS = [
   F('vol_brain_approx_ml', 'volumes', 'number', 'Brain volume seen by the baseline (approximate)', { unit: 'mL' }),
   F('dice_ai_vs_csf', 'volumes', 'number', 'Dice, AI vs baseline', { min: 0, max: 1 }),
   F('ref_ventricles_ml', 'reference', 'number', 'Reference (expert) ventricular volume', { unit: 'mL', note: 'optional; from manual segmentation' }),
-  F('evans_index', 'reference', 'number', "Evans' index (manual)", { min: 0, max: 1, note: 'optional; measured by the reader' }),
-  F('fohr', 'reference', 'number', 'Frontal and occipital horn ratio (manual)', { min: 0, max: 1, note: 'optional; measured by the reader' }),
-  F('age_months', 'clinical', 'integer', 'Age at scan', { unit: 'months', note: 'whole months; capped at 1080 (90 years)', min: 0, max: 1080 }),
-  F('sex', 'clinical', 'category', 'Sex', { choices: SEX }),
-  F('gestational_age_weeks', 'clinical', 'integer', 'Gestational age at birth', { unit: 'weeks', min: 22, max: 44 }),
-  F('head_circumference_cm', 'clinical', 'number', 'Head circumference at scan', { unit: 'cm' }),
-  F('etiology', 'clinical', 'category', 'Etiology of hydrocephalus', { choices: ETIOLOGY }),
-  F('treatment', 'clinical', 'category', 'Index treatment', { choices: TREATMENT }),
-  F('treatment_success_6m', 'outcome', 'yesno', 'No further CSF surgery at 6 months', { note: 'filled in later' }),
+  F('ventriculomegaly_imaging', 'reference', 'yesno', 'Ventriculomegaly on imaging (reader)', { cde: 'Imaging hydrocephalus ventriculomegaly finding indicator', cde_id: 'C21757', source: CDE_CM }),
+  F('evans_index', 'reference', 'number', "Evans' index (reader)", { min: 0, max: 1, cde: 'Evans index ratio value', cde_id: 'C60636', source: CDE_CM }),
+  F('fohr', 'reference', 'number', 'Frontal and occipital horn ratio (reader)', { min: 0, max: 1, note: 'FOHR; widely used in pediatric hydrocephalus; no NINDS CDE' }),
+  F('age_months', 'clinical', 'integer', 'Age at scan', { unit: 'months', note: 'whole months (corrected age for preterm infants if the site uses it); capped at 1080 (90 years)', min: 0, max: 1080, cde: 'Age', source: CDE_GEN }),
+  F('sex', 'clinical', 'category', 'Sex', { choices: SEX, cde: 'Sex / gender', source: CDE_GEN }),
+  F('gestational_age_weeks', 'clinical', 'integer', 'Gestational age at birth', { unit: 'weeks', min: 22, max: 44, cde: 'Gestational age', source: `${CDE_CP} (Supplemental - Highly Recommended); ${CDE_REHAB}` }),
+  F('birth_weight_g', 'clinical', 'integer', 'Birth weight', { unit: 'g', min: 300, max: 6500, cde: 'Birth weight report value', cde_id: 'C00311', source: `${CDE_REHAB}; ${CDE_CP}` }),
+  F('head_circumference_cm', 'clinical', 'number', 'Head circumference at scan', { unit: 'cm', note: 'infant hydrocephalus metric (HCRN, ETV/CPC follow-up); no NINDS CDE' }),
+  F('fontanelle', 'clinical', 'category', 'Anterior fontanelle at scan', { choices: FONTANELLE, note: 'infant hydrocephalus metric; no NINDS CDE' }),
+  F('etiology', 'clinical', 'category', 'Etiology of hydrocephalus', { choices: ETIOLOGY, note: 'Hydrocephalus Clinical Research Network categories, split for the ETV Success Score' }),
+  F('previous_shunt', 'clinical', 'yesno', 'Previous CSF shunt', { note: 'ETV Success Score component' }),
+  F('family_history_hydrocephalus', 'clinical', 'category', 'Family history of hydrocephalus', { choices: FAMHX, cde: 'Hydrocephalus family history treated / untreated indicator', cde_id: 'C22448; C22447', source: CDE_CM }),
+  F('treatment', 'clinical', 'category', 'Index treatment', { choices: TREATMENT, note: 'shunt types as in the NINDS Assessment of Shunt Function CRF (F2158)', source: CDE_CM }),
+  F('etv_success_score', 'clinical', 'integer', 'ETV Success Score', { unit: '%', min: 0, max: 90, note: 'computed: age + etiology + previous shunt (Kulkarni et al., J Pediatr 2009;155:254-9); predicted 6-month ETV success' }),
+  F('treatment_success_6m', 'outcome', 'yesno', 'Treatment success at 6 months', { note: 'no further CSF diversion surgery or death from hydrocephalus within 6 months of the index procedure (HCRN / ETVSS definition); filled in later' }),
+  F('csf_diversion_dependent', 'outcome', 'category', 'Shunt-dependent hydrocephalus at follow-up', { choices: DEPEND, cde: 'Shunt-dependent hydrocephalus', source: 'NINDS SAH CDE, Shunt Dependency CRF (F2482; Exploratory)', note: 'filled in later' }),
   F('reintervention', 'outcome', 'yesno', 'Any re-intervention for hydrocephalus', { note: 'filled in later' }),
 ];
 export const FIELD = Object.fromEntries(FIELDS.map(f => [f.name, f]));
-export const CLINICAL = ['age_months', 'sex', 'gestational_age_weeks', 'head_circumference_cm', 'etiology', 'treatment'];
-const OUTCOMES = ['treatment_success_6m', 'reintervention'];
-const READER = ['ref_ventricles_ml', 'evans_index', 'fohr'];
+export const CLINICAL = ['age_months', 'sex', 'gestational_age_weeks', 'birth_weight_g', 'head_circumference_cm', 'fontanelle', 'etiology', 'previous_shunt', 'family_history_hydrocephalus', 'treatment'];
+const OUTCOMES = ['treatment_success_6m', 'csf_diversion_dependent', 'reintervention'];
+const READER = ['ref_ventricles_ml', 'ventriculomegaly_imaging', 'evans_index', 'fohr'];
 
 // ---------- settings (site code, country, site key) ----------
 const SKEY = 'neurokids-research-settings';
@@ -132,8 +154,9 @@ export async function buildRecord(R, form) {
   };
   for (const k of [...CLINICAL, ...READER]) {
     const v = form[k], n = num(v), f = FIELD[k];
-    rec[k] = v === '' || v == null ? null : f.type === 'category' ? String(v) : n == null ? null : f.type === 'integer' ? Math.min(f.max ?? Infinity, Math.round(n)) : r3(n);
+    rec[k] = v === '' || v == null ? null : f.type === 'category' ? String(v) : n == null ? null : f.type === 'integer' || f.type === 'yesno' ? Math.min(f.max ?? Infinity, Math.round(n)) : r3(n);
   }
+  rec.etv_success_score = etvss(rec.age_months, rec.etiology, rec.previous_shunt);
   for (const k of OUTCOMES) rec[k] = null;
   for (const f of FIELDS) if (!(f.name in rec)) rec[f.name] = null;
   return rec;
@@ -144,9 +167,9 @@ const csvCell = v => v == null ? '' : /[",\n\r]/.test(String(v)) ? `"${String(v)
 export const toCSV = rows => [FIELDS.map(f => f.name).join(','), ...rows.map(r => FIELDS.map(f => csvCell(r[f.name])).join(','))].join('\r\n') + '\r\n';
 export const toJSONL = rows => rows.map(r => JSON.stringify(Object.fromEntries(FIELDS.map(f => [f.name, r[f.name] ?? null])))).join('\n') + '\n';
 export function dictionaryCSV() {
-  const cols = ['variable', 'group', 'type', 'label', 'unit', 'choices', 'min', 'max', 'note'];
+  const cols = ['variable', 'group', 'type', 'label', 'unit', 'choices', 'min', 'max', 'cde_concept', 'cde_id', 'cde_source', 'note'];
   return [cols.join(','), ...FIELDS.map(f => [f.name, f.group, f.type, f.label, f.unit, (f.choices || (f.type === 'yesno' ? [['1', 'Yes'], ['0', 'No']] : [])).map(([c, l]) => `${c}=${l}`).join(' | '),
-    f.min, f.max, f.note].map(csvCell).join(','))].join('\r\n') + '\r\n';
+    f.min, f.max, f.cde, f.cde_id, f.source, f.note].map(csvCell).join(','))].join('\r\n') + '\r\n';
 }
 export function redcapDictionaryCSV() {
   const H = ['Variable / Field Name', 'Form Name', 'Section Header', 'Field Type', 'Field Label', 'Choices, Calculations, OR Slider Labels', 'Field Note', 'Text Validation Type OR Show Slider Number',
@@ -159,7 +182,7 @@ export function redcapDictionaryCSV() {
     const typ = f.type === 'category' ? 'dropdown' : f.type === 'yesno' ? 'yesno' : 'text';
     const val = f.type === 'integer' ? 'integer' : f.type === 'number' ? 'number' : '';
     const sec = f.group !== last ? HEAD[f.group] : ''; last = f.group;
-    return [f.name, FORM[f.group], sec, typ, f.label, ch, [f.unit, f.note].filter(Boolean).join('; '), val, f.min ?? '', f.max ?? '', '', '', f.name === 'record_id' ? 'y' : '', '', '', '', '', ''].map(csvCell).join(',');
+    return [f.name, FORM[f.group], sec, typ, f.label, ch, [f.unit, f.note, f.cde ? `CDE: ${f.cde}${f.cde_id ? ` (${f.cde_id})` : ''}, ${f.source}` : ''].filter(Boolean).join('; '), val, f.min ?? '', f.max ?? '', '', '', f.name === 'record_id' ? 'y' : '', '', '', '', '', ''].map(csvCell).join(',');
   });
   return [H.map(csvCell).join(','), ...rows].join('\r\n') + '\r\n';
 }
@@ -174,7 +197,7 @@ export function toFHIR(rows) {
       const value = f.type === 'category' ? { valueCodeableConcept: { coding: [{ system: `${CODE_SYSTEM}/${f.name}`, code: String(v), display: (f.choices.find(c => c[0] === String(v)) || [])[1] }] } }
         : f.type === 'yesno' ? { valueBoolean: !!+v } : f.unit ? { valueQuantity: { value: +v, unit: f.unit, system: 'http://unitsofmeasure.org', code: f.unit === 'months' ? 'mo' : f.unit === 'weeks' ? 'wk' : f.unit } } : { valueQuantity: { value: +v } };
       entries.push({ fullUrl: `urn:uuid:${r.record_id}-${f.name}`, resource: { resourceType: 'Observation', id: `${r.record_id}-${f.name}`.slice(0, 64), status: 'final',
-        category: [{ text: f.group === 'clinical' || f.group === 'outcome' ? 'clinical' : 'imaging' }], code: { coding: [{ system: CODE_SYSTEM, code: f.name, display: f.label }], text: f.label },
+        category: [{ text: f.group === 'clinical' || f.group === 'outcome' ? 'clinical' : 'imaging' }], code: { coding: [{ system: CODE_SYSTEM, code: f.name, display: f.label }, ...(f.cde_id ? f.cde_id.split('; ').map(id => ({ system: 'https://www.commondataelements.ninds.nih.gov', code: id, display: f.cde })) : [])], text: f.label },
         subject: { reference: `urn:uuid:${p}` }, ...value, note: [{ text: `record ${r.record_id}; scan ${r.scan_number ?? '?'}; site ${r.site_id || '?'}` }] } });
     }
   }
@@ -255,23 +278,32 @@ export function mountResearch(host, getR) {
       <label>Scan date<input class="scand w9" type="date"></label>
       <span class="days fine">days from procedure: —</span>
     </div>
-    <details class="more"><summary>Clinical variables (optional)</summary>
+    <details class="more"><summary>Clinical variables (optional; NINDS CDE where one exists)</summary>
       <div class="row">
-        <label>Age (months)<input class="c-age_months w6" type="number" min="0" max="1080" value="${esc(age ?? '')}"></label>
-        <label>Sex<select class="c-sex">${opt(SEX, '')}</select></label>
-        <label>Gestational age (wk)<input class="c-gestational_age_weeks w4" type="number" min="22" max="44"></label>
-        <label>Head circ. (cm)<input class="c-head_circumference_cm w4" type="number" step="0.1" min="20" max="70"></label>
-        <label>Etiology<select class="c-etiology w12">${opt(ETIOLOGY, '')}</select></label>
-        <label>Index treatment<select class="c-treatment w12">${opt(TREATMENT, '')}</select></label>
+        <label title="NINDS General CDE: Age (here in whole months)">Age (months)<input class="c-age_months w6" type="number" min="0" max="1080" value="${esc(age ?? '')}"></label>
+        <label title="NINDS General CDE: Sex / gender">Sex<select class="c-sex">${opt(SEX, '')}</select></label>
+        <label title="NINDS CP CDE (Supplemental - Highly Recommended) and NeuroRehab Infant/Pediatric CDE: gestational age">Gestational age (wk)<input class="c-gestational_age_weeks w4" type="number" min="22" max="44"></label>
+        <label title="NINDS CDE C00311: Birth weight report value">Birth weight (g)<input class="c-birth_weight_g w6" type="number" min="300" max="6500" step="10"></label>
+        <label title="Infant hydrocephalus metric (no NINDS CDE)">Head circ. (cm)<input class="c-head_circumference_cm w4" type="number" step="0.1" min="20" max="70"></label>
+        <label title="Infant hydrocephalus metric (no NINDS CDE)">Fontanelle<select class="c-fontanelle">${opt(FONTANELLE, '')}</select></label>
       </div>
+      <div class="row">
+        <label title="Hydrocephalus Clinical Research Network categories">Etiology<select class="c-etiology w12">${opt(ETIOLOGY, '')}</select></label>
+        <label title="ETV Success Score component">Previous shunt<select class="c-previous_shunt">${opt(YN, '')}</select></label>
+        <label title="NINDS Chiari CDE C22448 / C22447: hydrocephalus family history treated / untreated indicator">Family history<select class="c-family_history_hydrocephalus">${opt(FAMHX, '')}</select></label>
+        <label title="Shunt types as in the NINDS Assessment of Shunt Function CRF (F2158)">Index treatment<select class="c-treatment w12">${opt(TREATMENT, '')}</select></label>
+        <span class="pseudo etvss" title="ETV Success Score (Kulkarni et al., J Pediatr 2009): age + etiology + previous shunt; predicted 6-month ETV success">ETVSS —</span>
+      </div>
+      <p class="fine">CDE sources: NINDS General, Cerebral Palsy and NeuroRehab (infant/pediatric) CDEs; NINDS Chiari I CDEs for hydrocephalus family history, ventriculomegaly, Evans' index and shunt types. NINDS has no dedicated pediatric hydrocephalus CDE set, so etiology follows the Hydrocephalus Clinical Research Network, and the ETV Success Score is computed from age, etiology and previous shunt. Hover a field to see its source.</p>
     </details>
     <details class="more"><summary>Reader measurements (optional)</summary>
       <div class="row">
         <label>Reference volume (mL)<input class="c-ref_ventricles_ml w6" type="number" step="0.1" min="0"></label>
-        <label>Evans' index<input class="c-evans_index w4" type="number" step="0.01" min="0" max="1"></label>
-        <label>FOHR<input class="c-fohr w4" type="number" step="0.01" min="0" max="1"></label>
+        <label title="NINDS CDE C21757: Imaging hydrocephalus ventriculomegaly finding indicator">Ventriculomegaly<select class="c-ventriculomegaly_imaging">${opt(YN, '')}</select></label>
+        <label title="NINDS CDE C60636: Evans index ratio value">Evans' index<input class="c-evans_index w4" type="number" step="0.01" min="0" max="1"></label>
+        <label title="Frontal and occipital horn ratio">FOHR<input class="c-fohr w4" type="number" step="0.01" min="0" max="1"></label>
       </div>
-      <p class="fine">Outcomes (no further CSF surgery at 6 months, re-intervention) are left blank, to be added later in your own database.</p>
+      <p class="fine">Outcomes (treatment success at 6 months, shunt dependence, re-intervention) are left blank, to be added later in your own database.</p>
     </details>
     <div class="acts">
       <button class="rbtn add" type="button">Add to site dataset</button>
@@ -300,6 +332,7 @@ export function mountResearch(host, getR) {
     keep(); const f = form();
     q('.pseudo').textContent = !f.studyId.trim() ? '—' : f.studyIsCode ? f.studyId.trim() : await pseudonym(f.studyId);
     const d = daysBetween(f.procedureDate, f.scanDate); q('.days').textContent = `days from procedure: ${d == null ? '—' : d}`;
+    const e = etvss(f.age_months, f.etiology, f.previous_shunt); q('.etvss').textContent = `ETVSS ${e == null ? '—' : e + '%'}`;
   };
   const count = async () => { const n = await countRecords(); q('.count').innerHTML = `Site dataset in this browser: <b>${n}</b> scan${n === 1 ? '' : 's'}`; };
   el.addEventListener('input', refresh); el.addEventListener('change', refresh); refresh(); count();
