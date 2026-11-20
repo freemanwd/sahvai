@@ -87,9 +87,15 @@ NeuroKids does not include Ventricle's code or weights.
 
 ## Outputs
 
-- ventricular volume (mL) per method, per-slice areas (CSV)
-- masks and the CT as `.nii.gz` in one shared grid (LPS-ordered voxels, RAS affine), so they overlay in 3D Slicer, ITK-SNAP or nibabel
-- a JSON summary (series, spacing, volumes, device, timings)
+**Export bar** (as in the SAHVAI calculator):
+- **Export Markdown / Export Text:** a report with scan geometry, volumes, Dice agreement, the largest cross-section, methods and reference
+- **Export PDF:** the same report on one A4 page, with the slice shown in the viewer and its overlays (jsPDF, bundled locally)
+- **Export PNG:** a 1600 × 900 summary card with the slice and the key numbers, ready for slides
+- **Research export** (adapted from the SAHVAI Lab research export): adds the scan to the site's de-identified pediatric hydrocephalus dataset, kept in the browser (IndexedDB), or downloads it as a zip (`record.csv`, `data_dictionary.csv`, `provenance.json`, `fhir_bundle.json`, NIfTI masks). The whole site dataset exports as CSV, JSON Lines, an HL7 FHIR R4 bundle, a data dictionary or a REDCap data dictionary.
+  - Fields: site, pseudonymised subject, scan number and timing, days from the index procedure, scan geometry, AI and baseline volumes, Dice, optional reader measurements (reference volume, Evans' index, FOHR), optional clinical variables (age in months, sex, gestational age, head circumference, etiology, index treatment such as ETV/CPC or shunt), and outcome columns to fill in later.
+  - Privacy: the study ID is turned into a pseudonym on the computer (HMAC-SHA-256 with a site key that can be backed up and shared across the site's computers). Dates become days from the procedure. Images and names are never exported.
+
+**Data files:** ventricular volume (mL) per method; per-slice areas (CSV); masks and the CT as `.nii.gz` in one shared grid (LPS-ordered voxels, RAS affine), so they overlay in 3D Slicer, ITK-SNAP or nibabel; a JSON summary (series, spacing, volumes, device, timings).
 
 ## Running locally
 

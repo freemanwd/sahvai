@@ -1,10 +1,12 @@
 import { filesFromDataTransfer } from './lib/source.js';
 import { MODELS } from './lib/models.js';
 import { niftiGz, sliceCsv, save } from './lib/export.js';
+import { toMarkdown, toText, toPDF, toPNG } from './lib/report.js';
+import { mountResearch } from './lib/research.js';
 
 const $ = id => document.getElementById(id);
 const t0 = performance.now();
-let worker = null, busy = false, runStart = 0, cur = { frac: 0 }, R = null, custom = null;
+let worker = null, busy = false, runStart = 0, cur = { frac: 0 }, R = null, custom = null, demoRun = false;
 
 function log(msg) {
   const t = ((performance.now() - t0) / 1000).toFixed(2).padStart(7);
@@ -87,7 +89,7 @@ function onMessage({ data }) {
   if (data.type === 'log') log(data.msg);
   else if (data.type === 'progress') setStage(data.stage, data.frac);
   else if (data.type === 'error') { log(`ERROR: ${data.msg}`); setStage(`Error: ${data.msg}`, 0); $('logbox').open = true; done(); }
-  else if (data.type === 'result') { R = window.__nk = data; R.model = $('mAi').checked ? currentModel().name : null; R.aiDemo = $('mAi').checked && currentModel().validated === false; setStage(`Done in ${data.seconds.toFixed(1)}s`, 1); show(); done(); }
+  else if (data.type === 'result') { R = window.__nk = data; R.model = $('mAi').checked ? currentModel().name : null; R.aiDemo = $('mAi').checked && currentModel().validated === false; R.demo = demoRun; setStage(`Done in ${data.seconds.toFixed(1)}s`, 1); show(); done(); }
 }
 
 // ---- results
@@ -104,6 +106,7 @@ function show() {
   $('oAi').parentElement.style.display = R.masks.ai ? '' : 'none';
   $('oCsf').parentElement.style.display = R.masks.csf ? '' : 'none';
   setupViewer();
+  mountResearch($('researchHost'), () => R);
   $('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -169,7 +172,7 @@ $('dlJson').onclick = () => {
   const { V, stats, info } = R;
   const out = {
     disclaimer: 'Research use only. Not a medical device and not for diagnosis or treatment decisions.',
-    tool: 'NeuroKids (https://freemanwd.github.io/sahvai/neurokids/)', model: R.model,
+    tool: 'NeuroKids (https://freemanwd.github.io/NeuroKids/)', model: R.model,
     ai_ventricular_volume_ml: stats.ai_ml === undefined ? null : +stats.ai_ml.toFixed(2),
     csf_baseline_volume_ml: stats.csf_ml === undefined ? null : +stats.csf_ml.toFixed(2),
     dice_ai_vs_baseline: stats.dice_ai_vs_csf === undefined ? null : +stats.dice_ai_vs_csf.toFixed(4),
@@ -180,17 +183,25 @@ $('dlJson').onclick = () => {
 };
 
 // ---- inputs
-$('files').onchange = e => { run(e.target.files); e.target.value = ''; };
-$('folder').onchange = e => { run(e.target.files); e.target.value = ''; };
+$('files').onchange = e => { demoRun = false; run(e.target.files); e.target.value = ''; };
+$('folder').onchange = e => { demoRun = false; run(e.target.files); e.target.value = ''; };
 $('sample').onclick = async () => {
   if (busy) return;
   const names = await (await fetch('samples/index.json')).json();
   const files = await Promise.all(names.map(async n => new File([await (await fetch('samples/' + n)).blob()], n.replace(/\//g, '_'))));
-  run(files);
+  demoRun = true; run(files);
 };
 const drop = $('drop');
 drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('over'); });
 drop.addEventListener('dragleave', () => drop.classList.remove('over'));
-drop.addEventListener('drop', async e => { e.preventDefault(); drop.classList.remove('over'); run(await filesFromDataTransfer(e.dataTransfer)); });
+drop.addEventListener('drop', async e => { e.preventDefault(); drop.classList.remove('over'); demoRun = false; run(await filesFromDataTransfer(e.dataTransfer)); });
 window.addEventListener('dragover', e => e.preventDefault());
 window.addEventListener('drop', e => e.preventDefault());
+
+// ---- report exports (Markdown, Text, PDF, PNG) and the research export box
+const z = () => +$('z').value;
+$('exMd').onclick = () => R && save(new Blob([toMarkdown(R, z())], { type: 'text/markdown' }), `NeuroKids_Report_${stamp()}.md`);
+$('exTxt').onclick = () => R && save(new Blob([toText(R, z())], { type: 'text/plain' }), `NeuroKids_Report_${stamp()}.txt`);
+$('exPdf').onclick = async () => { if (!R) return; try { await toPDF(R, z(), cv); } catch (e) { log(`PDF export failed: ${e.message}`); $('logbox').open = true; } };
+$('exPng').onclick = async () => { if (!R) return; try { await toPNG(R, z(), cv); } catch (e) { log(`PNG export failed: ${e.message}`); $('logbox').open = true; } };
+$('exRx').onclick = () => { const b = $('researchBox'); if (!b) return; b.open = !b.open; if (b.open) b.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); };
