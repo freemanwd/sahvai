@@ -19,7 +19,8 @@
         helsinki:     { name: 'Helsinki University Hospital', ll: [24.94, 60.17], kind: 'new' },
         valladolid:   { name: 'Río Hortega University Hospital · Valladolid', ll: [-4.71, 41.63], kind: 'new' },
         ucla:         { name: 'UCLA · Los Angeles', ll: [-118.44, 34.07], kind: 'new' },
-        arizona:      { name: 'University of Arizona · Tucson', ll: [-110.95, 32.23], kind: 'new' }
+        arizona:      { name: 'University of Arizona · Tucson', ll: [-110.95, 32.23], kind: 'new' },
+        australia:    { name: 'Townsville University Hospital · Queensland', ll: [146.76, -19.32], kind: 'new' }
     };
     const COLORS = { hub: '#4DA3FF', site: '#00D4FF', new: '#FFB547', node: '#9fd8ff' };
     const ARCS = [
@@ -32,6 +33,7 @@
         ['jacksonville', 'valladolid'],
         ['jacksonville', 'ucla'],
         ['jacksonville', 'arizona'],
+        ['jacksonville', 'australia'],
         ['jacksonville', 'baptist'],
         ['uw', 'nanchang']
     ];
