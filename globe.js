@@ -17,7 +17,9 @@
         brazil:       { name: 'UNIFESP · São Paulo (SAHV-BRaZA)', ll: [-46.63, -23.55], kind: 'site' },
         nanchang:     { name: 'Nanchang University · BrainHemoAI', ll: [115.86, 28.68], kind: 'new' },
         helsinki:     { name: 'Helsinki University Hospital', ll: [24.94, 60.17], kind: 'new' },
-        valladolid:   { name: 'Río Hortega University Hospital · Valladolid', ll: [-4.71, 41.63], kind: 'new' }
+        valladolid:   { name: 'Río Hortega University Hospital · Valladolid', ll: [-4.71, 41.63], kind: 'new' },
+        ucla:         { name: 'UCLA · Los Angeles', ll: [-118.44, 34.07], kind: 'new' },
+        arizona:      { name: 'University of Arizona · Tucson', ll: [-110.95, 32.23], kind: 'new' }
     };
     const COLORS = { hub: '#4DA3FF', site: '#00D4FF', new: '#FFB547', node: '#9fd8ff' };
     const ARCS = [
@@ -28,6 +30,8 @@
         ['jacksonville', 'nanchang'],
         ['jacksonville', 'helsinki'],
         ['jacksonville', 'valladolid'],
+        ['jacksonville', 'ucla'],
+        ['jacksonville', 'arizona'],
         ['jacksonville', 'baptist'],
         ['uw', 'nanchang']
     ];
