@@ -11,13 +11,17 @@
     const SITES = {
         jacksonville: { name: 'Mayo Clinic Florida · Jacksonville', ll: [-81.45, 30.26], kind: 'hub' },
         boston:       { name: "Boston Children's Hospital · Boston", ll: [-71.11, 42.34], kind: 'site' },
-        brazil:       { name: 'Santa Casa do Pará · Belém, Brazil', ll: [-48.48, -1.443], kind: 'site' }
+        brazil:       { name: 'Santa Casa do Pará · Belém, Brazil', ll: [-48.48, -1.443], kind: 'site' },
+        saopaulo:     { name: 'Santa Casa de São Paulo Hospital · São Paulo, Brazil', ll: [-46.63, -23.55], kind: 'site' }
     };
     const COLORS = { hub: '#4DA3FF', site: '#00D4FF', new: '#FFB547', node: '#9fd8ff' };
     const ARCS = [
         ['jacksonville', 'boston'],
         ['jacksonville', 'brazil'],
-        ['boston', 'brazil']
+        ['jacksonville', 'saopaulo'],
+        ['boston', 'brazil'],
+        ['boston', 'saopaulo'],
+        ['brazil', 'saopaulo']
     ];
 
     let land = null;
